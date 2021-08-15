@@ -28,3 +28,13 @@ Move it to your favorite local bin, e.g.:
 ```
 sudo mv ./Linux_x86_64 /usr/local/bin/impenetrable
 ```
+
+# Note on File Secrets
+
+Sometimes you may need to seal a `.crt` or a `.key`. impenetrable doesn't handle stdin.
+
+For file secrets, like certificates, take the following approach:
+
+```
+impenetrable "$(cat your-certificate.crt)"
+```
