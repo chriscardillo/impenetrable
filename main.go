@@ -73,8 +73,20 @@ func main(){
     }
     defer os.Remove(tmpSealed.Name()) // clean up
 
+    // Check environment for cert
+    cert := os.Getenv("IMPENETRABLE_CERT")
+    var txt string
+
+    fmt.Println("")
+    if cert != "" {
+      fmt.Println("Using provided env cert..")
+      txt = "kubeseal" + " --cert=" + cert + " --scope=cluster-wide " + "<" + tmpSecret.Name() + " >" + tmpSealed.Name()
+    } else {
+      fmt.Println("Will atempt to fetch cert from cluster..")
+      txt = "kubeseal" + " --scope=cluster-wide " + "<" + tmpSecret.Name() + " >" + tmpSealed.Name()
+    }
+
     // Execute kubeseal
-    txt := "kubeseal" + " --scope=cluster-wide " + "<" + tmpSecret.Name() + " >" + tmpSealed.Name()
     cmd := exec.Command(os.Getenv("SHELL"), "-c", txt)
     _ = cmd.Wait()
     cmd.CombinedOutput()
@@ -91,7 +103,12 @@ func main(){
     }
     bodyString := string(body)
     res := gjson.Get(bodyString, "spec.encryptedData.raw")
-    fmt.Println(res)
-
+    fmt.Println("")
+    if bodyString == "" {
+      fmt.Println("Secret could not be sealed!")
+    } else {
+      fmt.Println(res)
+    }
+    fmt.Println("")
   }
 }

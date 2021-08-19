@@ -38,3 +38,11 @@ For file secrets, like certificates, take the following approach:
 ```
 impenetrable "$(cat your-certificate.crt)"
 ```
+
+# Note on Certs
+
+You can provide your own path to a cert with the `IMPENETRABLE_CERT` environment variable:
+
+```
+export IMPENETRABLE_CERT=/path/to/your/cert
+```
